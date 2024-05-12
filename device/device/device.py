@@ -2,7 +2,12 @@ from bottle import Bottle, run
 import time
 from typing import Callable
 import requests
+import sys
 import threading
+
+
+def eprint(message):
+    print(message, file=sys.stderr)
 
 
 class Device:
@@ -40,6 +45,9 @@ class Sensor(Device):
         self.timeout = timeout
         self.is_running = True
 
+    def value_generator(self, value: int) -> int:
+        raise NotImplementedError
+
     def generate_value(self):
         self.hello_server()
         value = -1
@@ -66,7 +74,6 @@ class Valve(Device):
             host_port: int,
             port: int,
             actions: dict[str, Callable]
-
     ):
         super().__init__(apartment, device_type, host_port)
         self.actions = actions
