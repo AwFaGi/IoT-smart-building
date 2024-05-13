@@ -7,6 +7,7 @@ services:
   server:
     #    image: iot-test:latest
     build: big-server/
+    command: java -jar target/test-iot-0.0.1-SNAPSHOT.jar
     ports:
       - 8080:8080
 

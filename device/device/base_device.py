@@ -1,6 +1,7 @@
 from bottle import Bottle, run
 import time
 from typing import Callable
+import random
 import requests
 import sys
 import threading
@@ -17,6 +18,8 @@ class Device:
         self.host = f"http://host.docker.internal:{host_port}/{device_type}"
 
     def build_message(self, message_type: str, value: int = 0):
+        time.sleep(10)
+        time.sleep(random.randint(2, 60))
         return {
             "apartment": self.apartment,
             "device_type": self.device_type,

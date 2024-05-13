@@ -1,5 +1,5 @@
 import random
-from device import Sensor
+from .base_device import Sensor
 
 
 class TemperatureSensor(Sensor):

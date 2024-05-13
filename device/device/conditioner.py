@@ -1,4 +1,4 @@
-from device import Valve, eprint
+from .base_device import Valve, eprint
 
 
 class Conditioner(Valve):

@@ -11,3 +11,11 @@ management:
     metrics:
       export:
         enabled: true
+
+spring:
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://92.118.148.71/docker-db
+    username: root
+    password: vVeLPxj7RZXttL7w
+    driverClassName: org.postgresql.Driver

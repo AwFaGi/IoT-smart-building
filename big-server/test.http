@@ -1,1 +1,12 @@
 GET localhost:8080/actuator/prometheus
+
+###
+
+POST localhost:8080/aboba
+
+{
+            "apartment": "self.apartment",
+            "device_type": "self.device_type",
+            "message_type": "message_type",
+            "value": "value"
+        }
