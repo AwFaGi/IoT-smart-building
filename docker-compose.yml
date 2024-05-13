@@ -1,10 +1,34 @@
+volumes:
+  grafana-data:
+
+
 services:
 
   server:
-    build: server/
-    command: python ./server.py
+    #    image: iot-test:latest
+    build: big-server/
     ports:
-      - "8080:8080"
+      - 8080:8080
+
+  grafana:
+    image: grafana/grafana-oss:9.4.3
+    ports:
+      - 3000:3000
+
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./big-server/config/prometheus.yml:/etc/prometheus/prometheus.yml
+
 
   device1:
     build: device/
