@@ -15,11 +15,10 @@ class Device:
     def __init__(self, apartment: int, device_type: str, host_port: int):
         self.apartment = apartment
         self.device_type = device_type
-        self.host = f"http://host.docker.internal:{host_port}/{device_type}"
+        self.host = f"http://server:{host_port}/{device_type}"
 
     def build_message(self, message_type: str, value: int = 0):
-        time.sleep(10)
-        time.sleep(random.randint(2, 60))
+        time.sleep(random.randint(5, 60))
         return {
             "apartment": self.apartment,
             "device_type": self.device_type,
@@ -27,8 +26,15 @@ class Device:
             "value": value
         }
 
-    def hello_server(self):
-        requests.post(self.host, self.build_message("hello"))
+    def hello_server(self, times=0):
+        if times == 5:
+            eprint(f"{self.device_type} from {self.apartment} can't connect to server...")
+        try:
+            requests.post(self.host, self.build_message("hello"))
+            eprint(f"{self.device_type} from {self.apartment} sent hello to server")
+        except Exception:
+            time.sleep(10)
+            self.hello_server(times + 1)
 
     def start(self) -> threading.Thread:
         raise NotImplementedError
