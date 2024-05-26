@@ -6,18 +6,16 @@ class HotWaterSensor(Sensor):
     def __init__(
             self,
             apartment: int,
-            host_port: int,
     ):
         super().__init__(
             apartment,
-            "gvs",
+            "hotwater",
             self.value_generator,
-            host_port,
             60
         )
 
     def value_generator(self, value: int):
-        if value == 0:
+        if value == -1:
             return random.randrange(2, 30)
 
         return value + random.randrange(1, 3)

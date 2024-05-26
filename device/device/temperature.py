@@ -6,18 +6,16 @@ class TemperatureSensor(Sensor):
     def __init__(
             self,
             apartment: int,
-            host_port: int,
     ):
         super().__init__(
             apartment,
-            "thermo",
+            "temperature",
             self.value_generator,
-            host_port,
             20
         )
 
     def value_generator(self, value: int):
-        if value == 0:
-            return random.randrange(20, 32)
+        if value == -1:
+            return random.randrange(16, 32)
 
         return value + random.randrange(-2, 2)
