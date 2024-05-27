@@ -8,7 +8,7 @@ admin_client = AdminClient({
     "bootstrap.servers": "kafka:9092"
 })
 
-topic_list = ["temperature", "coldwater", "hotwater"] + [f"conditioner{i}" for i in range(1, 11)]
+topic_list = ["temperature", "coldwater", "hotwater"] + [f"conditioner{i}" for i in range(1, 101)]
 admin_client.create_topics(
     [NewTopic(i, 1, 1) for i in topic_list]
 )

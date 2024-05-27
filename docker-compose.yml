@@ -9,24 +9,24 @@ services:
 #    ports:
 #      - 8080:8080
 #
-#  grafana:
-#    image: grafana/grafana-oss:9.4.3
-#    ports:
-#      - 3000:3000
-#
-#    volumes:
-#      - grafana-data:/var/lib/grafana
-#
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=admin
-#
-#  prometheus:
-#    image: prom/prometheus:latest
-#    ports:
-#      - 9090:9090
-#    volumes:
-#      - ./big-server/config/prometheus.yml:/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana-oss:9.4.3
+    ports:
+      - 3000:3000
+
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./big-server/config/prometheus.yml:/etc/prometheus/prometheus.yml
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -51,22 +51,33 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui
-    container_name: kafka-ui
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    container_name: kafka-exporter
     ports:
-      - 8080:8080
-    restart: always
+      - "9308:9308"
     environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      KAFKA_URI: kafka:9092
+
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui
+#    container_name: kafka-ui
+#    ports:
+#      - 8080:8080
+#    restart: always
+#    environment:
+#      - KAFKA_CLUSTERS_0_NAME=local
+#      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+#      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
 
   server:
     build: server/
     command: python ./server.py
     depends_on:
-      - kafka-ui
+      - kafka-exporter
+#      - kafka-ui
+      - kafka
 
 
   device1:
@@ -149,723 +160,723 @@ services:
     ports:
       - "8110-8112:8110-8112"
 
-#  device11:
-#    build: device/
-#    command: python ./main.py 11 8113
-#    depends_on:
-#      - server
-#    ports:
-#      - "8113-8115:8113-8115"
-#
-#  device12:
-#    build: device/
-#    command: python ./main.py 12 8116
-#    depends_on:
-#      - server
-#    ports:
-#      - "8116-8118:8116-8118"
-#
-#  device13:
-#    build: device/
-#    command: python ./main.py 13 8119
-#    depends_on:
-#      - server
-#    ports:
-#      - "8119-8121:8119-8121"
-#
-#  device14:
-#    build: device/
-#    command: python ./main.py 14 8122
-#    depends_on:
-#      - server
-#    ports:
-#      - "8122-8124:8122-8124"
-#
-#  device15:
-#    build: device/
-#    command: python ./main.py 15 8125
-#    depends_on:
-#      - server
-#    ports:
-#      - "8125-8127:8125-8127"
-#
-#  device16:
-#    build: device/
-#    command: python ./main.py 16 8128
-#    depends_on:
-#      - server
-#    ports:
-#      - "8128-8130:8128-8130"
-#
-#  device17:
-#    build: device/
-#    command: python ./main.py 17 8131
-#    depends_on:
-#      - server
-#    ports:
-#      - "8131-8133:8131-8133"
-#
-#  device18:
-#    build: device/
-#    command: python ./main.py 18 8134
-#    depends_on:
-#      - server
-#    ports:
-#      - "8134-8136:8134-8136"
-#
-#  device19:
-#    build: device/
-#    command: python ./main.py 19 8137
-#    depends_on:
-#      - server
-#    ports:
-#      - "8137-8139:8137-8139"
-#
-#  device20:
-#    build: device/
-#    command: python ./main.py 20 8140
-#    depends_on:
-#      - server
-#    ports:
-#      - "8140-8142:8140-8142"
-#
-#  device21:
-#    build: device/
-#    command: python ./main.py 21 8143
-#    depends_on:
-#      - server
-#    ports:
-#      - "8143-8145:8143-8145"
-#
-#  device22:
-#    build: device/
-#    command: python ./main.py 22 8146
-#    depends_on:
-#      - server
-#    ports:
-#      - "8146-8148:8146-8148"
-#
-#  device23:
-#    build: device/
-#    command: python ./main.py 23 8149
-#    depends_on:
-#      - server
-#    ports:
-#      - "8149-8151:8149-8151"
-#
-#  device24:
-#    build: device/
-#    command: python ./main.py 24 8152
-#    depends_on:
-#      - server
-#    ports:
-#      - "8152-8154:8152-8154"
-#
-#  device25:
-#    build: device/
-#    command: python ./main.py 25 8155
-#    depends_on:
-#      - server
-#    ports:
-#      - "8155-8157:8155-8157"
-#
-#  device26:
-#    build: device/
-#    command: python ./main.py 26 8158
-#    depends_on:
-#      - server
-#    ports:
-#      - "8158-8160:8158-8160"
-#
-#  device27:
-#    build: device/
-#    command: python ./main.py 27 8161
-#    depends_on:
-#      - server
-#    ports:
-#      - "8161-8163:8161-8163"
-#
-#  device28:
-#    build: device/
-#    command: python ./main.py 28 8164
-#    depends_on:
-#      - server
-#    ports:
-#      - "8164-8166:8164-8166"
-#
-#  device29:
-#    build: device/
-#    command: python ./main.py 29 8167
-#    depends_on:
-#      - server
-#    ports:
-#      - "8167-8169:8167-8169"
-#
-#  device30:
-#    build: device/
-#    command: python ./main.py 30 8170
-#    depends_on:
-#      - server
-#    ports:
-#      - "8170-8172:8170-8172"
-#
-#  device31:
-#    build: device/
-#    command: python ./main.py 31 8173
-#    depends_on:
-#      - server
-#    ports:
-#      - "8173-8175:8173-8175"
-#
-#  device32:
-#    build: device/
-#    command: python ./main.py 32 8176
-#    depends_on:
-#      - server
-#    ports:
-#      - "8176-8178:8176-8178"
-#
-#  device33:
-#    build: device/
-#    command: python ./main.py 33 8179
-#    depends_on:
-#      - server
-#    ports:
-#      - "8179-8181:8179-8181"
-#
-#  device34:
-#    build: device/
-#    command: python ./main.py 34 8182
-#    depends_on:
-#      - server
-#    ports:
-#      - "8182-8184:8182-8184"
-#
-#  device35:
-#    build: device/
-#    command: python ./main.py 35 8185
-#    depends_on:
-#      - server
-#    ports:
-#      - "8185-8187:8185-8187"
-#
-#  device36:
-#    build: device/
-#    command: python ./main.py 36 8188
-#    depends_on:
-#      - server
-#    ports:
-#      - "8188-8190:8188-8190"
-#
-#  device37:
-#    build: device/
-#    command: python ./main.py 37 8191
-#    depends_on:
-#      - server
-#    ports:
-#      - "8191-8193:8191-8193"
-#
-#  device38:
-#    build: device/
-#    command: python ./main.py 38 8194
-#    depends_on:
-#      - server
-#    ports:
-#      - "8194-8196:8194-8196"
-#
-#  device39:
-#    build: device/
-#    command: python ./main.py 39 8197
-#    depends_on:
-#      - server
-#    ports:
-#      - "8197-8199:8197-8199"
-#
-#  device40:
-#    build: device/
-#    command: python ./main.py 40 8200
-#    depends_on:
-#      - server
-#    ports:
-#      - "8200-8202:8200-8202"
-#
-#  device41:
-#    build: device/
-#    command: python ./main.py 41 8203
-#    depends_on:
-#      - server
-#    ports:
-#      - "8203-8205:8203-8205"
-#
-#  device42:
-#    build: device/
-#    command: python ./main.py 42 8206
-#    depends_on:
-#      - server
-#    ports:
-#      - "8206-8208:8206-8208"
-#
-#  device43:
-#    build: device/
-#    command: python ./main.py 43 8209
-#    depends_on:
-#      - server
-#    ports:
-#      - "8209-8211:8209-8211"
-#
-#  device44:
-#    build: device/
-#    command: python ./main.py 44 8212
-#    depends_on:
-#      - server
-#    ports:
-#      - "8212-8214:8212-8214"
-#
-#  device45:
-#    build: device/
-#    command: python ./main.py 45 8215
-#    depends_on:
-#      - server
-#    ports:
-#      - "8215-8217:8215-8217"
-#
-#  device46:
-#    build: device/
-#    command: python ./main.py 46 8218
-#    depends_on:
-#      - server
-#    ports:
-#      - "8218-8220:8218-8220"
-#
-#  device47:
-#    build: device/
-#    command: python ./main.py 47 8221
-#    depends_on:
-#      - server
-#    ports:
-#      - "8221-8223:8221-8223"
-#
-#  device48:
-#    build: device/
-#    command: python ./main.py 48 8224
-#    depends_on:
-#      - server
-#    ports:
-#      - "8224-8226:8224-8226"
-#
-#  device49:
-#    build: device/
-#    command: python ./main.py 49 8227
-#    depends_on:
-#      - server
-#    ports:
-#      - "8227-8229:8227-8229"
-#
-#  device50:
-#    build: device/
-#    command: python ./main.py 50 8230
-#    depends_on:
-#      - server
-#    ports:
-#      - "8230-8232:8230-8232"
-#
-#  device51:
-#    build: device/
-#    command: python ./main.py 51 8233
-#    depends_on:
-#      - server
-#    ports:
-#      - "8233-8235:8233-8235"
-#
-#  device52:
-#    build: device/
-#    command: python ./main.py 52 8236
-#    depends_on:
-#      - server
-#    ports:
-#      - "8236-8238:8236-8238"
-#
-#  device53:
-#    build: device/
-#    command: python ./main.py 53 8239
-#    depends_on:
-#      - server
-#    ports:
-#      - "8239-8241:8239-8241"
-#
-#  device54:
-#    build: device/
-#    command: python ./main.py 54 8242
-#    depends_on:
-#      - server
-#    ports:
-#      - "8242-8244:8242-8244"
-#
-#  device55:
-#    build: device/
-#    command: python ./main.py 55 8245
-#    depends_on:
-#      - server
-#    ports:
-#      - "8245-8247:8245-8247"
-#
-#  device56:
-#    build: device/
-#    command: python ./main.py 56 8248
-#    depends_on:
-#      - server
-#    ports:
-#      - "8248-8250:8248-8250"
-#
-#  device57:
-#    build: device/
-#    command: python ./main.py 57 8251
-#    depends_on:
-#      - server
-#    ports:
-#      - "8251-8253:8251-8253"
-#
-#  device58:
-#    build: device/
-#    command: python ./main.py 58 8254
-#    depends_on:
-#      - server
-#    ports:
-#      - "8254-8256:8254-8256"
-#
-#  device59:
-#    build: device/
-#    command: python ./main.py 59 8257
-#    depends_on:
-#      - server
-#    ports:
-#      - "8257-8259:8257-8259"
-#
-#  device60:
-#    build: device/
-#    command: python ./main.py 60 8260
-#    depends_on:
-#      - server
-#    ports:
-#      - "8260-8262:8260-8262"
-#
-#  device61:
-#    build: device/
-#    command: python ./main.py 61 8263
-#    depends_on:
-#      - server
-#    ports:
-#      - "8263-8265:8263-8265"
-#
-#  device62:
-#    build: device/
-#    command: python ./main.py 62 8266
-#    depends_on:
-#      - server
-#    ports:
-#      - "8266-8268:8266-8268"
-#
-#  device63:
-#    build: device/
-#    command: python ./main.py 63 8269
-#    depends_on:
-#      - server
-#    ports:
-#      - "8269-8271:8269-8271"
-#
-#  device64:
-#    build: device/
-#    command: python ./main.py 64 8272
-#    depends_on:
-#      - server
-#    ports:
-#      - "8272-8274:8272-8274"
-#
-#  device65:
-#    build: device/
-#    command: python ./main.py 65 8275
-#    depends_on:
-#      - server
-#    ports:
-#      - "8275-8277:8275-8277"
-#
-#  device66:
-#    build: device/
-#    command: python ./main.py 66 8278
-#    depends_on:
-#      - server
-#    ports:
-#      - "8278-8280:8278-8280"
-#
-#  device67:
-#    build: device/
-#    command: python ./main.py 67 8281
-#    depends_on:
-#      - server
-#    ports:
-#      - "8281-8283:8281-8283"
-#
-#  device68:
-#    build: device/
-#    command: python ./main.py 68 8284
-#    depends_on:
-#      - server
-#    ports:
-#      - "8284-8286:8284-8286"
-#
-#  device69:
-#    build: device/
-#    command: python ./main.py 69 8287
-#    depends_on:
-#      - server
-#    ports:
-#      - "8287-8289:8287-8289"
-#
-#  device70:
-#    build: device/
-#    command: python ./main.py 70 8290
-#    depends_on:
-#      - server
-#    ports:
-#      - "8290-8292:8290-8292"
-#
-#  device71:
-#    build: device/
-#    command: python ./main.py 71 8293
-#    depends_on:
-#      - server
-#    ports:
-#      - "8293-8295:8293-8295"
-#
-#  device72:
-#    build: device/
-#    command: python ./main.py 72 8296
-#    depends_on:
-#      - server
-#    ports:
-#      - "8296-8298:8296-8298"
-#
-#  device73:
-#    build: device/
-#    command: python ./main.py 73 8299
-#    depends_on:
-#      - server
-#    ports:
-#      - "8299-8301:8299-8301"
-#
-#  device74:
-#    build: device/
-#    command: python ./main.py 74 8302
-#    depends_on:
-#      - server
-#    ports:
-#      - "8302-8304:8302-8304"
-#
-#  device75:
-#    build: device/
-#    command: python ./main.py 75 8305
-#    depends_on:
-#      - server
-#    ports:
-#      - "8305-8307:8305-8307"
-#
-#  device76:
-#    build: device/
-#    command: python ./main.py 76 8308
-#    depends_on:
-#      - server
-#    ports:
-#      - "8308-8310:8308-8310"
-#
-#  device77:
-#    build: device/
-#    command: python ./main.py 77 8311
-#    depends_on:
-#      - server
-#    ports:
-#      - "8311-8313:8311-8313"
-#
-#  device78:
-#    build: device/
-#    command: python ./main.py 78 8314
-#    depends_on:
-#      - server
-#    ports:
-#      - "8314-8316:8314-8316"
-#
-#  device79:
-#    build: device/
-#    command: python ./main.py 79 8317
-#    depends_on:
-#      - server
-#    ports:
-#      - "8317-8319:8317-8319"
-#
-#  device80:
-#    build: device/
-#    command: python ./main.py 80 8320
-#    depends_on:
-#      - server
-#    ports:
-#      - "8320-8322:8320-8322"
-#
-#  device81:
-#    build: device/
-#    command: python ./main.py 81 8323
-#    depends_on:
-#      - server
-#    ports:
-#      - "8323-8325:8323-8325"
-#
-#  device82:
-#    build: device/
-#    command: python ./main.py 82 8326
-#    depends_on:
-#      - server
-#    ports:
-#      - "8326-8328:8326-8328"
-#
-#  device83:
-#    build: device/
-#    command: python ./main.py 83 8329
-#    depends_on:
-#      - server
-#    ports:
-#      - "8329-8331:8329-8331"
-#
-#  device84:
-#    build: device/
-#    command: python ./main.py 84 8332
-#    depends_on:
-#      - server
-#    ports:
-#      - "8332-8334:8332-8334"
-#
-#  device85:
-#    build: device/
-#    command: python ./main.py 85 8335
-#    depends_on:
-#      - server
-#    ports:
-#      - "8335-8337:8335-8337"
-#
-#  device86:
-#    build: device/
-#    command: python ./main.py 86 8338
-#    depends_on:
-#      - server
-#    ports:
-#      - "8338-8340:8338-8340"
-#
-#  device87:
-#    build: device/
-#    command: python ./main.py 87 8341
-#    depends_on:
-#      - server
-#    ports:
-#      - "8341-8343:8341-8343"
-#
-#  device88:
-#    build: device/
-#    command: python ./main.py 88 8344
-#    depends_on:
-#      - server
-#    ports:
-#      - "8344-8346:8344-8346"
-#
-#  device89:
-#    build: device/
-#    command: python ./main.py 89 8347
-#    depends_on:
-#      - server
-#    ports:
-#      - "8347-8349:8347-8349"
-#
-#  device90:
-#    build: device/
-#    command: python ./main.py 90 8350
-#    depends_on:
-#      - server
-#    ports:
-#      - "8350-8352:8350-8352"
-#
-#  device91:
-#    build: device/
-#    command: python ./main.py 91 8353
-#    depends_on:
-#      - server
-#    ports:
-#      - "8353-8355:8353-8355"
-#
-#  device92:
-#    build: device/
-#    command: python ./main.py 92 8356
-#    depends_on:
-#      - server
-#    ports:
-#      - "8356-8358:8356-8358"
-#
-#  device93:
-#    build: device/
-#    command: python ./main.py 93 8359
-#    depends_on:
-#      - server
-#    ports:
-#      - "8359-8361:8359-8361"
-#
-#  device94:
-#    build: device/
-#    command: python ./main.py 94 8362
-#    depends_on:
-#      - server
-#    ports:
-#      - "8362-8364:8362-8364"
-#
-#  device95:
-#    build: device/
-#    command: python ./main.py 95 8365
-#    depends_on:
-#      - server
-#    ports:
-#      - "8365-8367:8365-8367"
-#
-#  device96:
-#    build: device/
-#    command: python ./main.py 96 8368
-#    depends_on:
-#      - server
-#    ports:
-#      - "8368-8370:8368-8370"
-#
-#  device97:
-#    build: device/
-#    command: python ./main.py 97 8371
-#    depends_on:
-#      - server
-#    ports:
-#      - "8371-8373:8371-8373"
-#
-#  device98:
-#    build: device/
-#    command: python ./main.py 98 8374
-#    depends_on:
-#      - server
-#    ports:
-#      - "8374-8376:8374-8376"
-#
-#  device99:
-#    build: device/
-#    command: python ./main.py 99 8377
-#    depends_on:
-#      - server
-#    ports:
-#      - "8377-8379:8377-8379"
-#
-#  device100:
-#    build: device/
-#    command: python ./main.py 100 8380
-#    depends_on:
-#      - server
-#    ports:
-#      - "8380-8382:8380-8382"
-#
+  device11:
+    build: device/
+    command: python ./main.py 11 8113
+    depends_on:
+      - server
+    ports:
+      - "8113-8115:8113-8115"
+
+  device12:
+    build: device/
+    command: python ./main.py 12 8116
+    depends_on:
+      - server
+    ports:
+      - "8116-8118:8116-8118"
+
+  device13:
+    build: device/
+    command: python ./main.py 13 8119
+    depends_on:
+      - server
+    ports:
+      - "8119-8121:8119-8121"
+
+  device14:
+    build: device/
+    command: python ./main.py 14 8122
+    depends_on:
+      - server
+    ports:
+      - "8122-8124:8122-8124"
+
+  device15:
+    build: device/
+    command: python ./main.py 15 8125
+    depends_on:
+      - server
+    ports:
+      - "8125-8127:8125-8127"
+
+  device16:
+    build: device/
+    command: python ./main.py 16 8128
+    depends_on:
+      - server
+    ports:
+      - "8128-8130:8128-8130"
+
+  device17:
+    build: device/
+    command: python ./main.py 17 8131
+    depends_on:
+      - server
+    ports:
+      - "8131-8133:8131-8133"
+
+  device18:
+    build: device/
+    command: python ./main.py 18 8134
+    depends_on:
+      - server
+    ports:
+      - "8134-8136:8134-8136"
+
+  device19:
+    build: device/
+    command: python ./main.py 19 8137
+    depends_on:
+      - server
+    ports:
+      - "8137-8139:8137-8139"
+
+  device20:
+    build: device/
+    command: python ./main.py 20 8140
+    depends_on:
+      - server
+    ports:
+      - "8140-8142:8140-8142"
+
+  device21:
+    build: device/
+    command: python ./main.py 21 8143
+    depends_on:
+      - server
+    ports:
+      - "8143-8145:8143-8145"
+
+  device22:
+    build: device/
+    command: python ./main.py 22 8146
+    depends_on:
+      - server
+    ports:
+      - "8146-8148:8146-8148"
+
+  device23:
+    build: device/
+    command: python ./main.py 23 8149
+    depends_on:
+      - server
+    ports:
+      - "8149-8151:8149-8151"
+
+  device24:
+    build: device/
+    command: python ./main.py 24 8152
+    depends_on:
+      - server
+    ports:
+      - "8152-8154:8152-8154"
+
+  device25:
+    build: device/
+    command: python ./main.py 25 8155
+    depends_on:
+      - server
+    ports:
+      - "8155-8157:8155-8157"
+
+  device26:
+    build: device/
+    command: python ./main.py 26 8158
+    depends_on:
+      - server
+    ports:
+      - "8158-8160:8158-8160"
+
+  device27:
+    build: device/
+    command: python ./main.py 27 8161
+    depends_on:
+      - server
+    ports:
+      - "8161-8163:8161-8163"
+
+  device28:
+    build: device/
+    command: python ./main.py 28 8164
+    depends_on:
+      - server
+    ports:
+      - "8164-8166:8164-8166"
+
+  device29:
+    build: device/
+    command: python ./main.py 29 8167
+    depends_on:
+      - server
+    ports:
+      - "8167-8169:8167-8169"
+
+  device30:
+    build: device/
+    command: python ./main.py 30 8170
+    depends_on:
+      - server
+    ports:
+      - "8170-8172:8170-8172"
+
+  device31:
+    build: device/
+    command: python ./main.py 31 8173
+    depends_on:
+      - server
+    ports:
+      - "8173-8175:8173-8175"
+
+  device32:
+    build: device/
+    command: python ./main.py 32 8176
+    depends_on:
+      - server
+    ports:
+      - "8176-8178:8176-8178"
+
+  device33:
+    build: device/
+    command: python ./main.py 33 8179
+    depends_on:
+      - server
+    ports:
+      - "8179-8181:8179-8181"
+
+  device34:
+    build: device/
+    command: python ./main.py 34 8182
+    depends_on:
+      - server
+    ports:
+      - "8182-8184:8182-8184"
+
+  device35:
+    build: device/
+    command: python ./main.py 35 8185
+    depends_on:
+      - server
+    ports:
+      - "8185-8187:8185-8187"
+
+  device36:
+    build: device/
+    command: python ./main.py 36 8188
+    depends_on:
+      - server
+    ports:
+      - "8188-8190:8188-8190"
+
+  device37:
+    build: device/
+    command: python ./main.py 37 8191
+    depends_on:
+      - server
+    ports:
+      - "8191-8193:8191-8193"
+
+  device38:
+    build: device/
+    command: python ./main.py 38 8194
+    depends_on:
+      - server
+    ports:
+      - "8194-8196:8194-8196"
+
+  device39:
+    build: device/
+    command: python ./main.py 39 8197
+    depends_on:
+      - server
+    ports:
+      - "8197-8199:8197-8199"
+
+  device40:
+    build: device/
+    command: python ./main.py 40 8200
+    depends_on:
+      - server
+    ports:
+      - "8200-8202:8200-8202"
+
+  device41:
+    build: device/
+    command: python ./main.py 41 8203
+    depends_on:
+      - server
+    ports:
+      - "8203-8205:8203-8205"
+
+  device42:
+    build: device/
+    command: python ./main.py 42 8206
+    depends_on:
+      - server
+    ports:
+      - "8206-8208:8206-8208"
+
+  device43:
+    build: device/
+    command: python ./main.py 43 8209
+    depends_on:
+      - server
+    ports:
+      - "8209-8211:8209-8211"
+
+  device44:
+    build: device/
+    command: python ./main.py 44 8212
+    depends_on:
+      - server
+    ports:
+      - "8212-8214:8212-8214"
+
+  device45:
+    build: device/
+    command: python ./main.py 45 8215
+    depends_on:
+      - server
+    ports:
+      - "8215-8217:8215-8217"
+
+  device46:
+    build: device/
+    command: python ./main.py 46 8218
+    depends_on:
+      - server
+    ports:
+      - "8218-8220:8218-8220"
+
+  device47:
+    build: device/
+    command: python ./main.py 47 8221
+    depends_on:
+      - server
+    ports:
+      - "8221-8223:8221-8223"
+
+  device48:
+    build: device/
+    command: python ./main.py 48 8224
+    depends_on:
+      - server
+    ports:
+      - "8224-8226:8224-8226"
+
+  device49:
+    build: device/
+    command: python ./main.py 49 8227
+    depends_on:
+      - server
+    ports:
+      - "8227-8229:8227-8229"
+
+  device50:
+    build: device/
+    command: python ./main.py 50 8230
+    depends_on:
+      - server
+    ports:
+      - "8230-8232:8230-8232"
+
+  device51:
+    build: device/
+    command: python ./main.py 51 8233
+    depends_on:
+      - server
+    ports:
+      - "8233-8235:8233-8235"
+
+  device52:
+    build: device/
+    command: python ./main.py 52 8236
+    depends_on:
+      - server
+    ports:
+      - "8236-8238:8236-8238"
+
+  device53:
+    build: device/
+    command: python ./main.py 53 8239
+    depends_on:
+      - server
+    ports:
+      - "8239-8241:8239-8241"
+
+  device54:
+    build: device/
+    command: python ./main.py 54 8242
+    depends_on:
+      - server
+    ports:
+      - "8242-8244:8242-8244"
+
+  device55:
+    build: device/
+    command: python ./main.py 55 8245
+    depends_on:
+      - server
+    ports:
+      - "8245-8247:8245-8247"
+
+  device56:
+    build: device/
+    command: python ./main.py 56 8248
+    depends_on:
+      - server
+    ports:
+      - "8248-8250:8248-8250"
+
+  device57:
+    build: device/
+    command: python ./main.py 57 8251
+    depends_on:
+      - server
+    ports:
+      - "8251-8253:8251-8253"
+
+  device58:
+    build: device/
+    command: python ./main.py 58 8254
+    depends_on:
+      - server
+    ports:
+      - "8254-8256:8254-8256"
+
+  device59:
+    build: device/
+    command: python ./main.py 59 8257
+    depends_on:
+      - server
+    ports:
+      - "8257-8259:8257-8259"
+
+  device60:
+    build: device/
+    command: python ./main.py 60 8260
+    depends_on:
+      - server
+    ports:
+      - "8260-8262:8260-8262"
+
+  device61:
+    build: device/
+    command: python ./main.py 61 8263
+    depends_on:
+      - server
+    ports:
+      - "8263-8265:8263-8265"
+
+  device62:
+    build: device/
+    command: python ./main.py 62 8266
+    depends_on:
+      - server
+    ports:
+      - "8266-8268:8266-8268"
+
+  device63:
+    build: device/
+    command: python ./main.py 63 8269
+    depends_on:
+      - server
+    ports:
+      - "8269-8271:8269-8271"
+
+  device64:
+    build: device/
+    command: python ./main.py 64 8272
+    depends_on:
+      - server
+    ports:
+      - "8272-8274:8272-8274"
+
+  device65:
+    build: device/
+    command: python ./main.py 65 8275
+    depends_on:
+      - server
+    ports:
+      - "8275-8277:8275-8277"
+
+  device66:
+    build: device/
+    command: python ./main.py 66 8278
+    depends_on:
+      - server
+    ports:
+      - "8278-8280:8278-8280"
+
+  device67:
+    build: device/
+    command: python ./main.py 67 8281
+    depends_on:
+      - server
+    ports:
+      - "8281-8283:8281-8283"
+
+  device68:
+    build: device/
+    command: python ./main.py 68 8284
+    depends_on:
+      - server
+    ports:
+      - "8284-8286:8284-8286"
+
+  device69:
+    build: device/
+    command: python ./main.py 69 8287
+    depends_on:
+      - server
+    ports:
+      - "8287-8289:8287-8289"
+
+  device70:
+    build: device/
+    command: python ./main.py 70 8290
+    depends_on:
+      - server
+    ports:
+      - "8290-8292:8290-8292"
+
+  device71:
+    build: device/
+    command: python ./main.py 71 8293
+    depends_on:
+      - server
+    ports:
+      - "8293-8295:8293-8295"
+
+  device72:
+    build: device/
+    command: python ./main.py 72 8296
+    depends_on:
+      - server
+    ports:
+      - "8296-8298:8296-8298"
+
+  device73:
+    build: device/
+    command: python ./main.py 73 8299
+    depends_on:
+      - server
+    ports:
+      - "8299-8301:8299-8301"
+
+  device74:
+    build: device/
+    command: python ./main.py 74 8302
+    depends_on:
+      - server
+    ports:
+      - "8302-8304:8302-8304"
+
+  device75:
+    build: device/
+    command: python ./main.py 75 8305
+    depends_on:
+      - server
+    ports:
+      - "8305-8307:8305-8307"
+
+  device76:
+    build: device/
+    command: python ./main.py 76 8308
+    depends_on:
+      - server
+    ports:
+      - "8308-8310:8308-8310"
+
+  device77:
+    build: device/
+    command: python ./main.py 77 8311
+    depends_on:
+      - server
+    ports:
+      - "8311-8313:8311-8313"
+
+  device78:
+    build: device/
+    command: python ./main.py 78 8314
+    depends_on:
+      - server
+    ports:
+      - "8314-8316:8314-8316"
+
+  device79:
+    build: device/
+    command: python ./main.py 79 8317
+    depends_on:
+      - server
+    ports:
+      - "8317-8319:8317-8319"
+
+  device80:
+    build: device/
+    command: python ./main.py 80 8320
+    depends_on:
+      - server
+    ports:
+      - "8320-8322:8320-8322"
+
+  device81:
+    build: device/
+    command: python ./main.py 81 8323
+    depends_on:
+      - server
+    ports:
+      - "8323-8325:8323-8325"
+
+  device82:
+    build: device/
+    command: python ./main.py 82 8326
+    depends_on:
+      - server
+    ports:
+      - "8326-8328:8326-8328"
+
+  device83:
+    build: device/
+    command: python ./main.py 83 8329
+    depends_on:
+      - server
+    ports:
+      - "8329-8331:8329-8331"
+
+  device84:
+    build: device/
+    command: python ./main.py 84 8332
+    depends_on:
+      - server
+    ports:
+      - "8332-8334:8332-8334"
+
+  device85:
+    build: device/
+    command: python ./main.py 85 8335
+    depends_on:
+      - server
+    ports:
+      - "8335-8337:8335-8337"
+
+  device86:
+    build: device/
+    command: python ./main.py 86 8338
+    depends_on:
+      - server
+    ports:
+      - "8338-8340:8338-8340"
+
+  device87:
+    build: device/
+    command: python ./main.py 87 8341
+    depends_on:
+      - server
+    ports:
+      - "8341-8343:8341-8343"
+
+  device88:
+    build: device/
+    command: python ./main.py 88 8344
+    depends_on:
+      - server
+    ports:
+      - "8344-8346:8344-8346"
+
+  device89:
+    build: device/
+    command: python ./main.py 89 8347
+    depends_on:
+      - server
+    ports:
+      - "8347-8349:8347-8349"
+
+  device90:
+    build: device/
+    command: python ./main.py 90 8350
+    depends_on:
+      - server
+    ports:
+      - "8350-8352:8350-8352"
+
+  device91:
+    build: device/
+    command: python ./main.py 91 8353
+    depends_on:
+      - server
+    ports:
+      - "8353-8355:8353-8355"
+
+  device92:
+    build: device/
+    command: python ./main.py 92 8356
+    depends_on:
+      - server
+    ports:
+      - "8356-8358:8356-8358"
+
+  device93:
+    build: device/
+    command: python ./main.py 93 8359
+    depends_on:
+      - server
+    ports:
+      - "8359-8361:8359-8361"
+
+  device94:
+    build: device/
+    command: python ./main.py 94 8362
+    depends_on:
+      - server
+    ports:
+      - "8362-8364:8362-8364"
+
+  device95:
+    build: device/
+    command: python ./main.py 95 8365
+    depends_on:
+      - server
+    ports:
+      - "8365-8367:8365-8367"
+
+  device96:
+    build: device/
+    command: python ./main.py 96 8368
+    depends_on:
+      - server
+    ports:
+      - "8368-8370:8368-8370"
+
+  device97:
+    build: device/
+    command: python ./main.py 97 8371
+    depends_on:
+      - server
+    ports:
+      - "8371-8373:8371-8373"
+
+  device98:
+    build: device/
+    command: python ./main.py 98 8374
+    depends_on:
+      - server
+    ports:
+      - "8374-8376:8374-8376"
+
+  device99:
+    build: device/
+    command: python ./main.py 99 8377
+    depends_on:
+      - server
+    ports:
+      - "8377-8379:8377-8379"
+
+  device100:
+    build: device/
+    command: python ./main.py 100 8380
+    depends_on:
+      - server
+    ports:
+      - "8380-8382:8380-8382"
+
