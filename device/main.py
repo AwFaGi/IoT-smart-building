@@ -1,30 +1,38 @@
 import logging
+import sys
 
 from device.cold_water import ColdWaterSensor
 from device.hot_water import HotWaterSensor
-from device.temperature import TemperatureSensor
 from device.conditioner import Conditioner
-import sys
+from device.temperature import TemperatureSensor
+from device.light import Light
+from device.motion import MotionSensor
 
 
-apartment = int(sys.argv[1])
-port = int(sys.argv[2])
-host_port = 8080
+def main():
+    apartment = int(sys.argv[1])
 
-logging.basicConfig(level=logging.DEBUG)
+    hvs = ColdWaterSensor(apartment)
+    gvs = HotWaterSensor(apartment)
+    conditioner = Conditioner(apartment)
+    thermometer = TemperatureSensor(apartment)
+    light = Light(apartment)
+    motion = MotionSensor(apartment)
 
-hvs = ColdWaterSensor(apartment)
-gvs = HotWaterSensor(apartment)
-thermometer = TemperatureSensor(apartment)
-conditioner = Conditioner(apartment)
+    threads = []
 
-threads = []
+    logging.debug(f'Initializing flat №{apartment}')
+    threads.append(hvs.start())
+    threads.append(gvs.start())
+    threads.append(conditioner.start())
+    threads.append(thermometer.start())
+    threads.append(light.start())
+    threads.append(motion.start())
 
-logging.debug(f'Initializing flat №{apartment}')
-threads.append(hvs.start())
-threads.append(gvs.start())
-threads.append(thermometer.start())
-threads.append(conditioner.start())
+    for t in threads:
+        t.join()
 
-for t in threads:
-    t.join()
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    main()

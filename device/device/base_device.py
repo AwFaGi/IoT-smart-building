@@ -8,6 +8,7 @@ from confluent_kafka import Producer, Consumer
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 class Device:
     def __init__(self, apartment: int, device_type: str):
         self.apartment = apartment

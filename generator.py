@@ -5,11 +5,9 @@ if __name__ == '__main__':
             file.write(f"""
   device{i}:
     build: device/
-    command: python ./main.py {i} {8080 + (i * 3)}
+    command: python ./main.py {i}
     depends_on:
       - server
-    ports:
-      - "{8080 + (i * 3)}-{8080 + (i * 3) + 2}:{8080 + (i * 3)}-{8080 + (i * 3) + 2}"
 """
 
                        )
