@@ -9,8 +9,8 @@ admin_client = AdminClient({
 })
 
 topic_list = ["temperature", "coldwater", "hotwater", "motion"]
-cond_list = [f"conditioner{i}" for i in range(1, 101)]
-light_list = [f"light{i}" for i in range(1, 101)]
+cond_list = [f"conditioner{i}" for i in range(1, 21)]
+light_list = [f"light{i}" for i in range(1, 21)]
 admin_client.create_topics(
     [NewTopic(i, 1, 1) for i in topic_list + cond_list + light_list]
 )

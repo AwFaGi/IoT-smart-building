@@ -1,6 +1,7 @@
 import json
 import logging
 import threading
+import copy
 
 from confluent_kafka import Consumer, Producer
 
@@ -8,7 +9,9 @@ from confluent_kafka import Consumer, Producer
 class BasicListener:
 
     def __init__(self, config, topic):
-        self.consumer = Consumer(config)
+        self.config = copy.deepcopy(config)
+        self.config['group.id'] += f"-{topic}"
+        self.consumer = Consumer(self.config)
         self.topic = topic
 
     def build_message(self, state: int):
